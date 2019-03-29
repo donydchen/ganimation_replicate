@@ -3,14 +3,15 @@ from .base_model import BaseModel
 from . import model_utils
 
 
-class GANimationModel(BaseModel):
-    """docstring for GANimationModel"""
+
+class StarGANModel(BaseModel):
+    """docstring for StarGANModel"""
     def __init__(self):
-        super(GANimationModel, self).__init__()
-        self.name = "GANimation"
+        super(StarGANModel, self).__init__()
+        self.name = "StarGAN"
 
     def initialize(self, opt):
-        super(GANimationModel, self).initialize(opt)
+        super(StarGANModel, self).initialize(opt)
 
         self.net_gen = model_utils.define_splitG(self.opt.img_nc, self.opt.aus_nc, self.opt.ngf, use_dropout=self.opt.use_dropout, 
                     norm=self.opt.norm, init_type=self.opt.init_type, init_gain=self.opt.init_gain, gpu_ids=self.gpu_ids)
@@ -25,7 +26,7 @@ class GANimationModel(BaseModel):
             self.load_ckpt(self.opt.load_epoch)
 
     def setup(self):
-        super(GANimationModel, self).setup()
+        super(StarGANModel, self).setup()
         if self.is_train:
             # setup optimizer
             self.optim_gen = torch.optim.Adam(self.net_gen.parameters(),
@@ -47,13 +48,11 @@ class GANimationModel(BaseModel):
 
     def forward(self):
         # generate fake image
-        self.color_mask ,self.aus_mask, self.embed = self.net_gen(self.src_img, self.tar_aus)
-        self.fake_img = self.aus_mask * self.src_img + (1 - self.aus_mask) * self.color_mask
+        self.fake_img, _, _ = self.net_gen(self.src_img, self.tar_aus)
 
         # reconstruct real image
         if self.is_train:
-            self.rec_color_mask, self.rec_aus_mask, self.rec_embed = self.net_gen(self.fake_img, self.src_aus)
-            self.rec_real_img = self.rec_aus_mask * self.fake_img + (1 - self.rec_aus_mask) * self.rec_color_mask
+            self.rec_real_img, _, _ = self.net_gen(self.fake_img, self.src_aus)
 
     def backward_dis(self):
         # real image
@@ -84,18 +83,10 @@ class GANimationModel(BaseModel):
         # target to original domain reconstruct, identity loss
         self.loss_gen_rec = self.criterionL1(self.rec_real_img, self.src_img)
 
-        # constrain on AUs mask
-        self.loss_gen_mask_real_aus = torch.mean(self.aus_mask)
-        self.loss_gen_mask_fake_aus = torch.mean(self.rec_aus_mask)
-        self.loss_gen_smooth_real_aus = self.criterionTV(self.aus_mask)
-        self.loss_gen_smooth_fake_aus = self.criterionTV(self.rec_aus_mask)
-
         # combine and backward G loss
         self.loss_gen =   self.opt.lambda_dis * self.loss_gen_GAN \
                         + self.opt.lambda_aus * self.loss_gen_fake_aus \
-                        + self.opt.lambda_rec * self.loss_gen_rec \
-                        + self.opt.lambda_mask * (self.loss_gen_mask_real_aus + self.loss_gen_mask_fake_aus) \
-                        + self.opt.lambda_tv * (self.loss_gen_smooth_real_aus + self.loss_gen_smooth_fake_aus)
+                        + self.opt.lambda_rec * self.loss_gen_rec 
 
         self.loss_gen.backward()
 
@@ -117,26 +108,26 @@ class GANimationModel(BaseModel):
     def save_ckpt(self, epoch):
         # save the specific networks
         save_models_name = ['gen', 'dis']
-        return super(GANimationModel, self).save_ckpt(epoch, save_models_name)
+        return super(StarGANModel, self).save_ckpt(epoch, save_models_name)
 
     def load_ckpt(self, epoch):
         # load the specific part of networks
         load_models_name = ['gen']
         if self.is_train:
             load_models_name.extend(['dis'])
-        return super(GANimationModel, self).load_ckpt(epoch, load_models_name)
+        return super(StarGANModel, self).load_ckpt(epoch, load_models_name)
 
     def clean_ckpt(self, epoch):
         # load the specific part of networks
         load_models_name = ['gen', 'dis']
-        return super(GANimationModel, self).clean_ckpt(epoch, load_models_name)
+        return super(StarGANModel, self).clean_ckpt(epoch, load_models_name)
 
     def get_latest_losses(self):
         get_losses_name = ['dis_fake', 'dis_real', 'dis_real_aus', 'gen_rec']
-        return super(GANimationModel, self).get_latest_losses(get_losses_name)
+        return super(StarGANModel, self).get_latest_losses(get_losses_name)
 
     def get_latest_visuals(self):
-        visuals_name = ['src_img', 'tar_img', 'color_mask', 'aus_mask', 'fake_img']
+        visuals_name = ['src_img', 'tar_img', 'fake_img']
         if self.is_train:
-            visuals_name.extend(['rec_color_mask', 'rec_aus_mask', 'rec_real_img'])
-        return super(GANimationModel, self).get_latest_visuals(visuals_name)
+            visuals_name.extend(['rec_real_img'])
+        return super(StarGANModel, self).get_latest_visuals(visuals_name)

@@ -1,14 +1,15 @@
 # GANimation -- An Out-of-the-Box Replicate
 
+A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available!
+
 ## Pros (compared with the [official](https://github.com/albertpumarola/GANimation) implementation)
 
 * Codes are cleaner and well structured, inspired by the [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 * Provide a more powerful test function for generating **linear interpolations** between two expressions as shown in the paper.
 * Provide a **preprocessed [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) dataset**, including cropped faces, Action Units related to all cropped faces, train and test split.
-* Provide **pretrained models** for the above CelebA dataset, including both generator and discriminator.
-* Provide useful scripts for extracting Action Units throughout the dataset (will release soon).
-* Provide Action Units vector for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) extracted using [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace) (will release soon).
-* Provide pretrained models for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) dataset (will release soon).
+* Provide **pretrained models** for the above CelebA dataset, including both generator and discriminator (trained with ~145k images for 30 epoches).
+* Provide Action Units vectors for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) extracted using [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace).
+* Provide **pretrained models** for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) dataset (trained with ~410k images for 30 epoches).
 
 ![ganimation_show](imgs/ganimation_show.jpg)
 
@@ -29,9 +30,9 @@ git clone https://github.com/donydchen/ganimation_replicate
 cd ganimation_replicate
 ```
 
-### Download Resources
+### Resources
 
-* All resources related to this project are located [here](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza).         
+* All resources related to this project are located **[HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)**.         
 * Download `datasets` and put it in the root path of this project.       
 * Download `ckpts` and put it in the root path of this project. (optional, only for test or finetune)
 
@@ -67,6 +68,18 @@ python main.py --data_root [path_to_dataset] --ckpt_dir [path_to_existing_checkp
 # e.g. python main.py --data_root datasets/celebA --gpu_ids 0,1 --sample_img_freq 300 --n_threads 18 --ckpt_dir ckpts/celebA/ganimation/190327_161852 --load_epoch 30 --epoch_count 31 --niter 30 --niter_decay 10
 ```
 
+### Use Own Datasets
+
+* **Crop Face:** Use [face_recognition](https://github.com/ageitgey/face_recognition) to extract face bounding box and crop face from images.
+* **Obtain AUs Vector:** Use [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace) to extract Action Units vectors from the above cropped face. Specifically, only the AUs intensity is used in this project, namely `AU01_r, AU02_r, AU04_r, AU05_r, AU06_r, AU07_r, AU09_r, AU10_r, AU12_r, AU14_r, AU15_r, AU17_r, AU20_r, AU23_r, AU25_r, AU26_r, AU45_r`.
+
+```
+./FaceLandmarkImg -f [path_to_img] -aus
+
+# In the result file, values of columns [2:19] are extracted for later usage.
+```
+
+* **Downlod Pretrained Model:** Since in this project, the EmotionNet employed for training contains more than 400k in-the-wild face images, the pretrained model should meet the requirements of lots of scenes. You're recommended to directly try to apply the EmotionNet pretrained model on your own datasets.
 
 ## Some Results
 

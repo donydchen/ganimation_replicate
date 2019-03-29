@@ -9,6 +9,7 @@ class BaseModel:
     """docstring for BaseModel"""
     def __init__(self):
         super(BaseModel, self).__init__()
+        self.name = "Base"
 
     def initialize(self, opt):
         self.opt = opt
@@ -19,6 +20,7 @@ class BaseModel:
         self.models_name = []
         
     def setup(self):
+        print("Trained with Model [%s]" % self.name)
         if self.is_train:
             self.set_train()
             # define loss function

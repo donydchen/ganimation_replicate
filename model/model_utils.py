@@ -11,18 +11,6 @@ Helper functions for model
 Borrow tons of code from https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/blob/master/models/networks.py
 '''
 
-
-# def get_norm_layer(norm_type='instance'):
-#     if norm_type == 'batch':
-#         norm_layer = functools.partial(nn.BatchNorm2d, affine=True)
-#     elif norm_type == 'instance':
-#         norm_layer = functools.partial(nn.InstanceNorm2d, affine=False, track_running_stats=True)
-#     elif norm_type == 'none':
-#         norm_layer = None
-#     else:
-#         raise NotImplementedError('normalization layer [%s] is not found' % norm_type)
-#     return norm_layer
-
 def get_norm_layer(norm_type='instance'):
     """Return a normalization layer
     Parameters:
@@ -555,104 +543,5 @@ class TVLoss(nn.Module):
         return t.size()[1]*t.size()[2]*t.size()[3]
 
 
-# ------------------------------ Identity loss --------------------------------------
-# Light CNN module, adopted from https://github.com/AlfredXiangWu/LightCNN/blob/master/light_cnn.py
-class mfm(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, type=1):
-        super(mfm, self).__init__()
-        self.out_channels = out_channels
-        if type == 1:
-            self.filter = nn.Conv2d(in_channels, 2*out_channels, kernel_size=kernel_size, stride=stride, padding=padding)
-        else:
-            self.filter = nn.Linear(in_channels, 2*out_channels)
-
-    def forward(self, x):
-        x = self.filter(x)
-        out = torch.split(x, self.out_channels, 1)
-        return torch.max(out[0], out[1])
-
-
-class group(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
-        super(group, self).__init__()
-        self.conv_a = mfm(in_channels, in_channels, 1, 1, 0)
-        self.conv   = mfm(in_channels, out_channels, kernel_size, stride, padding)
-
-    def forward(self, x):
-        x = self.conv_a(x)
-        x = self.conv(x)
-        return x
-
-
-class LightCNN(nn.Module):
-    def __init__(self, num_classes=79077):
-        super(LightCNN, self).__init__()
-        self.features = nn.Sequential(
-            mfm(1, 48, 5, 1, 2), 
-            nn.MaxPool2d(kernel_size=2, stride=2, ceil_mode=True), 
-            group(48, 96, 3, 1, 1), 
-            nn.MaxPool2d(kernel_size=2, stride=2, ceil_mode=True),
-            group(96, 192, 3, 1, 1),
-            nn.MaxPool2d(kernel_size=2, stride=2, ceil_mode=True), 
-            group(192, 128, 3, 1, 1),
-            group(128, 128, 3, 1, 1),
-            nn.MaxPool2d(kernel_size=2, stride=2, ceil_mode=True),
-            )
-        self.fc1 = mfm(8*8*128, 256, type=0)
-        self.fc2 = nn.Linear(256, num_classes)
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc1(x)
-        # x = F.dropout(x, training=self.training)
-        out = self.fc2(x)
-        return out, x
-
-
-class IdentityLoss(nn.Module):
-    def __init__(self, ckpt_path, device, img_nc):
-        super(IdentityLoss, self).__init__()
-        self.img_nc = img_nc
-        # init LightCNN
-        self.nn_model = LightCNN().to(device)
-
-        # load checkpoint 
-        saved_model = torch.load(ckpt_path, map_location=device)
-        # update state_dict, since LightCNN's author saved its model using nn.DataParallel
-        state_dict = OrderedDict()
-        for k, v in saved_model['state_dict'].items():
-            name = k[7:]  # remove 'module.'
-            state_dict[name] = v
-        self.nn_model.load_state_dict(state_dict)
-
-        # set require train to False 
-        if self.nn_model is not None:
-            for param in self.nn_model.parameters():
-                param.requires_grad = False
-
-        #self.loss = nn.L1Loss().to(device)
-        self.loss = lambda x, y: torch.mean(torch.abs(x - y))
-
-    def forward(self, x, y):
-        # LightCNN uses gray-scale image
-        x_fc2, x_fc1 = self.nn_model(self.process_img(x))
-        y_fc2, y_fc1 = self.nn_model(self.process_img(y))
-        idtloss = self.loss(x_fc1, y_fc1) + self.loss(x_fc2, y_fc2)
-        return idtloss
-
-    def process_img(self, img):
-        if self.img_nc == 3:
-            return self.rgb2gray(img)
-        return img
-
-    # https://stackoverflow.com/questions/52439364/how-to-convert-rgb-images-to-grayscale-in-pytorch-dataloader
-    def rgb2gray(self, img):
-        r_img, g_img, b_img = img[:, 0, :, :], img[:, 1, :, :], img[:, 2, :, :]
-        gray_img = 0.299 * r_img + 0.587 * g_img + 0.114 * b_img
-        gray_img = gray_img.unsqueeze(1)  # expand channel dim
-        return gray_img
-
-# ------------------------------ End Identity loss --------------------------------------
 
 
