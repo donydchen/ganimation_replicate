@@ -1,6 +1,13 @@
 # GANimation -- An Out-of-the-Box Replicate
 
-A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available!
+<p align="left">
+	<img src="https://img.shields.io/badge/Status-Release-gold.svg?style=flat-square" alt="Status">
+	<img src="https://img.shields.io/badge/Platform-Linux | macOS-lightgrey.svg?style=flat-square" alt="Platform">
+	<img src="https://img.shields.io/badge/PyTorch Version-0.4.1-blue.svg?style=flat-square" alt="PyTorch">
+	<img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="License">
+</p>
+
+**A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available!**
 
 ## Pros (compared with the [official](https://github.com/albertpumarola/GANimation) implementation)
 
