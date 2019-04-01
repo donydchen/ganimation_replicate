@@ -105,5 +105,6 @@ venv.bak/
 
 # project related 
 results
+ckpts
 sftp-config.json
 

@@ -20,7 +20,7 @@ class BaseModel:
         self.models_name = []
         
     def setup(self):
-        print("Trained with Model [%s]" % self.name)
+        print("%s with Model [%s]" % (self.opt.mode.capitalize(), self.name))
         if self.is_train:
             self.set_train()
             # define loss function

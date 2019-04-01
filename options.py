@@ -27,6 +27,7 @@ class Options(object):
         parser.add_argument('--results', type=str, default="results", help='save test results to this path.')
         parser.add_argument('--interpolate_len', type=int, default=5, help='interpolate length for test.')
         parser.add_argument('--no_test_eval', action='store_true', help='do not use eval mode during test time.')
+        parser.add_argument('--save_test_gif', action='store_true', help='save gif images instead of the concatenation of static images.')
 
         parser.add_argument('--data_root', required=True, help='paths to data set.')
         parser.add_argument('--imgs_dir', type=str, default="imgs", help='path to image')

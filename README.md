@@ -7,18 +7,29 @@
 	<img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="License">
 </p>
 
-**A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available!**
+**A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available [HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)!**
+
+<div align="center">
+	<img src="imgs/gifs/celeba_1.gif">
+    <img src="imgs/gifs/celeba_2.gif">
+    <img src="imgs/gifs/emotionnet_1.gif">
+    <img src="imgs/gifs/emotionnet_2.gif">
+	<img src="imgs/gifs/emotionnet_3.gif">
+    <img src="imgs/gifs/emotionnet_4.gif">
+</div>
+
+![ganimation_show](imgs/ganimation_show.jpg)
 
 ## Pros (compared with the [official](https://github.com/albertpumarola/GANimation) implementation)
 
 * Codes are cleaner and well structured, inspired by the [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 * Provide a more powerful test function for generating **linear interpolations** between two expressions as shown in the paper.
 * Provide a **preprocessed [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) dataset**, including cropped faces, Action Units related to all cropped faces, train and test split.
-* Provide **pretrained models** for the above CelebA dataset, including both generator and discriminator (trained with ~145k images for 30 epoches).
+* Provide **pretrained models** for the above CelebA dataset (trained with ~145k images for 30 epoches).
 * Provide Action Units vectors for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) extracted using [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace).
-* Provide **pretrained models** for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) dataset (trained with ~410k images for 30 epoches).
+* Provide **pretrained models** for the EmotionNet dataset (trained with ~410k images for 30 epoches). 
 
-![ganimation_show](imgs/ganimation_show.jpg)
+All resources related to this project are located **[HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)**.
 
 ## Getting Started
 
@@ -27,6 +38,7 @@
 * Python 3
 * PyTorch 0.4.1
 * visdom (optional, only for training with browser visualizer)
+* imageio (optional, only for generating GIF image in testing)
 
 ### Installation
 
@@ -35,6 +47,7 @@
 ```
 git clone https://github.com/donydchen/ganimation_replicate
 cd ganimation_replicate
+pip install -r requirements.txt
 ```
 
 ### Resources
@@ -42,6 +55,7 @@ cd ganimation_replicate
 * All resources related to this project are located **[HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)**.         
 * Download `datasets` and put it in the root path of this project.       
 * Download `ckpts` and put it in the root path of this project. (optional, only for test or finetune)
+* Note: for the EmotionNet, the AU vectors are saved as a dictionary, where the key is the file name (without extension), and dumped into a pickle file. 
 
 ### Train
 
@@ -96,9 +110,13 @@ python main.py --data_root [path_to_dataset] --ckpt_dir [path_to_existing_checkp
 
 ![celeba_training](imgs/celeba_training.jpg)
 
-**Testing**
+**Testing** (with *GANimation* model, on epoch 30)
 
 ![celeba_testing](imgs/celeba_testing.jpg)
+
+**Testing** (with *StarGAN* model, on epoch 30)
+
+![celeba_testing](imgs/celeba_stargan_testing.jpg)
 
 ### EmotionNet （Visual quality is much better than that of CelebA）
 
@@ -106,7 +124,7 @@ python main.py --data_root [path_to_dataset] --ckpt_dir [path_to_existing_checkp
 
 ![emotionnet_training](imgs/emotionnet_training.jpg)
 
-**Testing**
+**Testing** (with *GANimation* model, on epoch 30)
 
 ![emotionnet_testing](imgs/emotionnet_testing.jpg)
 

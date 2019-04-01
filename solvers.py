@@ -132,17 +132,27 @@ class Solver(object):
 
     def test_save_imgs(self, faces_list, paths_list):
         for idx in range(len(paths_list[0])):
-            # concate src, inters, tar faces
-            concate_img = np.array(self.visual.numpy2im(faces_list[0][idx]))
-            for face_idx in range(1, len(faces_list)):
-                concate_img = np.concatenate((concate_img, np.array(self.visual.numpy2im(faces_list[face_idx][idx]))), axis=1)
-            concate_img = Image.fromarray(concate_img)
-            # use src and tar image name 
             src_name = os.path.splitext(os.path.basename(paths_list[0][idx]))[0]
-            tar_name = os.path.basename(paths_list[1][idx])
-            saved_path = os.path.join(self.opt.results, "%s_%s" % (src_name, tar_name))
-            # save image and print
-            concate_img.save(saved_path)
+            tar_name = os.path.splitext(os.path.basename(paths_list[1][idx]))[0]
+
+            if self.opt.save_test_gif:
+                import imageio
+                imgs_numpy_list = []
+                for face_idx in range(len(faces_list) - 1):  # remove target image
+                    cur_numpy = np.array(self.visual.numpy2im(faces_list[face_idx][idx]))
+                    imgs_numpy_list.extend([cur_numpy for _ in range(3)])
+                saved_path = os.path.join(self.opt.results, "%s_%s.gif" % (src_name, tar_name))
+                imageio.mimsave(saved_path, imgs_numpy_list)
+            else:
+                # concate src, inters, tar faces
+                concate_img = np.array(self.visual.numpy2im(faces_list[0][idx]))
+                for face_idx in range(1, len(faces_list)):
+                    concate_img = np.concatenate((concate_img, np.array(self.visual.numpy2im(faces_list[face_idx][idx]))), axis=1)
+                concate_img = Image.fromarray(concate_img)
+                # save image
+                saved_path = os.path.join(self.opt.results, "%s_%s.jpg" % (src_name, tar_name))
+                concate_img.save(saved_path)
+
             print("[Success] Saved images to %s" % saved_path)
 
 
