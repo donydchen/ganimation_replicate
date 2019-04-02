@@ -79,6 +79,7 @@ python main.py --mode test --data_root [path_to_dataset] --ckpt_dir [path_to_pre
 
 # e.g. python main.py --mode test --data_root datasets/celebA --batch_size 8 --max_dataset_size 150 --gpu_ids 0,1 --ckpt_dir ckpts/celebA/ganimation/190327_161852/ --load_epoch 30
 #      set '--interpolate_len 1' if you don't need linear interpolation.
+#      use '--save_test_gif' to generate animated images.
 ```
 
 ### Finetune
@@ -116,7 +117,7 @@ python main.py --data_root [path_to_dataset] --ckpt_dir [path_to_existing_checkp
 
 **Testing** (with *StarGAN* model, on epoch 30)
 
-![celeba_testing](imgs/celeba_stargan_testing.jpg)
+![celeba_stargan_testing](imgs/celeba_stargan_testing.jpg)
 
 ### EmotionNet （Visual quality is much better than that of CelebA）
 
@@ -127,6 +128,10 @@ python main.py --data_root [path_to_dataset] --ckpt_dir [path_to_existing_checkp
 **Testing** (with *GANimation* model, on epoch 30)
 
 ![emotionnet_testing](imgs/emotionnet_testing.jpg)
+
+**Testing** (with *StarGAN* model, on epoch 30)
+
+![emotionnet_stargan_testing](imgs/emotionnet_stargan_testing.jpg)
 
 ## Why this Project?
 
