@@ -101,7 +101,7 @@ python main.py --data_root [path_to_dataset] --ckpt_dir [path_to_existing_checkp
 # In the result file, values of columns [2:19] are extracted for later usage.
 ```
 
-* **Downlod Pretrained Model:** Since in this project, the EmotionNet employed for training contains more than 400k in-the-wild face images, the pretrained model should meet the requirements of lots of scenes. You're recommended to directly try to apply the EmotionNet pretrained model on your own datasets.
+* **Download Pretrained Model:** Since in this project, the EmotionNet employed for training contains more than 400k in-the-wild face images, the pretrained model should meet the requirements of lots of scenes. You're recommended to directly try to apply the EmotionNet pretrained model on your own datasets.
 
 ## Some Results
 
