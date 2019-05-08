@@ -7,7 +7,7 @@
 	<img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="License">
 </p>
 
-**A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available [HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)!**
+**A reimplementation of *[GANimation: Anatomically-aware Facial Animation from a Single Image](https://arxiv.org/abs/1807.09251)*, using PyTorch. Pretrained models/weights are available at [GDrive](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza) or [BaiduPan](https://pan.baidu.com/s/1eLGC6jhciBS8DDuw_Gkd7A)(Code:3fyb) !**
 
 <div align="center">
 	<img src="imgs/gifs/celeba_1.gif">
@@ -29,7 +29,7 @@
 * Provide Action Units vectors for the [EmotionNet](https://cbcsl.ece.ohio-state.edu/EmotionNetChallenge/index.html) extracted using [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace).
 * Provide **pretrained models** for the EmotionNet dataset (trained with ~410k images for 30 epoches). 
 
-All resources related to this project are located **[HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)**.
+All resources related to this project are located at **[GDrive](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)** or **[BaiduPan](https://pan.baidu.com/s/1eLGC6jhciBS8DDuw_Gkd7A)(Code:3fyb)**.
 
 ## Getting Started
 
@@ -45,14 +45,14 @@ All resources related to this project are located **[HERE](https://drive.google.
 * Clone this repo:
 
 ```
-git clone https://github.com/donydchen/ganimation_replicate
+git clone https://github.com/donydchen/ganimation_replicate.git
 cd ganimation_replicate
 pip install -r requirements.txt
 ```
 
 ### Resources
 
-* All resources related to this project are located **[HERE](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)**.         
+* All resources related to this project are located at **[GDrive](https://drive.google.com/open?id=1MijMc6QnjrNFopT1G43WQFeei9ddcaza)** or **[BaiduPan](https://pan.baidu.com/s/1eLGC6jhciBS8DDuw_Gkd7A)(Code:3fyb)**.         
 * Download `datasets` and put it in the root path of this project.       
 * Download `ckpts` and put it in the root path of this project. (optional, only for test or finetune)
 * Note: for the EmotionNet, the AU vectors are saved as a dictionary, where the key is the file name (without extension), and dumped into a pickle file. 
